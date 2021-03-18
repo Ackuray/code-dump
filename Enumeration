@@ -1,0 +1,30 @@
+local Enumeration = {}
+
+local function setreadonly(tbl)
+	return setmetatable({}, {
+		__index = function(tbl, key)
+			error(key .. " does not exist for Enum")
+		end,
+		__newindex = function(tbl, key, value)
+			error("Attempt to modify read-only table")
+		end,
+		__metatable = false
+	})
+end
+
+
+function Enumeration.new(values)
+	assert(typeof(values) == "table", "Argument of the Enum constructor is not a table")
+	local newEnum = {}
+	
+	for i,v in pairs(values) do
+		if newEnum[v] then
+			error("Multiple keys in Enum")
+		end
+		newEnum[v] = i
+	end
+	
+	return setreadonly(newEnum)
+end
+
+return Enumeration
